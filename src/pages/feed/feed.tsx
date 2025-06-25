@@ -28,6 +28,7 @@ export const Feed: FC = () => {
 
   if (error) {
     console.error('Feed error:', error);
+    alert(error);
   }
 
   return <FeedUI orders={orders} handleGetFeeds={handleGetFeeds} />;

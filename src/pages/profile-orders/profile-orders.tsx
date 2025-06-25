@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from '../../services/store';
 import { fetchUserOrders } from '../../services/slices/feedSlice';
 import { ProfileOrdersUI } from '@ui-pages';
-import { TOrder } from '@utils-types';
 import { FC } from 'react';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
+import { Preloader } from '@ui';
 
 export const ProfileOrders: FC = () => {
   const dispatch = useDispatch();
@@ -18,7 +18,7 @@ export const ProfileOrders: FC = () => {
   }, [dispatch]);
 
   if (loading) {
-    return <div>Загрузка...</div>;
+    return <Preloader />;
   }
 
   return <ProfileOrdersUI orders={orders} />;

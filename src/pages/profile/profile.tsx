@@ -46,7 +46,7 @@ export const Profile: FC = () => {
         })
         .catch((err) => {
           console.error('Ошибка обновления профиля:', err);
-          alert(`Ошибка обновления профиля`);
+          alert(err);
         });
     }
   };
