@@ -16,7 +16,7 @@ export const ProfileMenu: FC = () => {
       .then(() => {
         localStorage.removeItem('refreshToken');
         deleteCookie('accessToken');
-        dispatch(setUser(null as any));
+        dispatch(setUser(null));
         dispatch(setAuthenticated(false));
         navigate('/login', { replace: true });
       })

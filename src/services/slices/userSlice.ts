@@ -46,7 +46,7 @@ const userSlice = createSlice({
       state.loginUserError = null;
       state.registerUserError = null;
     },
-    setUser: (state, action: PayloadAction<TUser>) => {
+    setUser: (state, action: PayloadAction<TUser | null>) => {
       state.user = action.payload;
     },
     setAuthenticated: (state, action: PayloadAction<boolean>) => {

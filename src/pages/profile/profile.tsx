@@ -1,11 +1,12 @@
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from '../../services/store';
-import { updateUserApi } from '@api';
+import { TRegisterData, updateUserApi } from '@api';
+import { TUser } from '@utils-types';
 
 export const Profile: FC = () => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user) as TUser | null;
 
   const [formValue, setFormValue] = useState({
     name: user?.name || '',
@@ -14,11 +15,14 @@ export const Profile: FC = () => {
   });
 
   useEffect(() => {
-    setFormValue((prevState) => ({
-      ...prevState,
-      name: user?.name || '',
-      email: user?.email || ''
-    }));
+    if (user) {
+      setFormValue((prevState) => ({
+        ...prevState,
+        name: user.name,
+        email: user.email,
+        password: ''
+      }));
+    }
   }, [user]);
 
   const isFormChanged =
@@ -29,19 +33,22 @@ export const Profile: FC = () => {
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
 
-    const updateData: any = {};
+    const updateData: Partial<TRegisterData> = {};
     if (formValue.name !== user?.name) updateData.name = formValue.name;
     if (formValue.email !== user?.email) updateData.email = formValue.email;
     if (formValue.password) updateData.password = formValue.password;
 
-    updateUserApi(updateData)
-      .then((data) => {
-        dispatch({ type: 'user/setUser', payload: data.user });
-        setFormValue((prev) => ({ ...prev, password: '' }));
-      })
-      .catch((err) => {
-        alert('Ошибка обновления профиля');
-      });
+    if (Object.keys(updateData).length > 0) {
+      updateUserApi(updateData)
+        .then((data) => {
+          dispatch({ type: 'user/setUser', payload: data.user });
+          setFormValue((prev) => ({ ...prev, password: '' }));
+        })
+        .catch((err) => {
+          console.error('Ошибка обновления профиля:', err);
+          alert(`Ошибка обновления профиля`);
+        });
+    }
   };
 
   const handleCancel = (e: SyntheticEvent) => {
