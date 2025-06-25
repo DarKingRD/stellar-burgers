@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import {
   registerUserApi,
@@ -45,6 +45,12 @@ const userSlice = createSlice({
     clearUserErrors: (state) => {
       state.loginUserError = null;
       state.registerUserError = null;
+    },
+    setUser: (state, action: PayloadAction<TUser>) => {
+      state.user = action.payload;
+    },
+    setAuthenticated: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -60,5 +66,6 @@ const userSlice = createSlice({
   }
 });
 
-export const { setAuthChecked, clearUserErrors } = userSlice.actions;
+export const { setAuthChecked, clearUserErrors, setUser, setAuthenticated } =
+  userSlice.actions;
 export default userSlice.reducer;
