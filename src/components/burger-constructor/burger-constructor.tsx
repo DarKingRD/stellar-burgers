@@ -5,6 +5,7 @@ import { BurgerConstructorUI } from '@ui';
 import { useSelector, useDispatch } from '../../services/store';
 import { createOrder, clearOrder } from '../../services/slices/orderSlice';
 import { clearConstructor } from '../../services/slices/constructorSlice';
+import { fetchFeeds } from '../../services/slices/feedSlice';
 
 export const BurgerConstructor: FC = () => {
   const dispatch = useDispatch();
@@ -15,6 +16,11 @@ export const BurgerConstructor: FC = () => {
   const { isAuthenticated } = useSelector((state) => state.user);
   const onOrderClick = () => {
     if (!constructorItems.bun || orderRequest) return;
+
+    if (!isAuthenticated) {
+      navigate('/login');
+      return;
+    }
 
     const ingredientIds = [
       constructorItems.bun._id,
