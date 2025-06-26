@@ -34,42 +34,60 @@ const App = () => {
       <main>
         <Routes>
           <Route path='/' element={<ConstructorPage />} />
-          <Route path='/login' element={
-            <GuestRoute>
-              <Login />
-            </GuestRoute>
-          } />
-          <Route path='/register' element={
-            <GuestRoute>
-              <Register />
-            </GuestRoute>
-          } />
-          <Route path='/forgot-password' element={
-            <GuestRoute>
-              <ForgotPassword />
-            </GuestRoute>
-          } />
-          <Route path='/reset-password' element={
-            <GuestRoute>
-              <ResetPassword />
-            </GuestRoute>
-          } />
-          <Route path='/profile/*' element={
-            <ProtectedRoute>
-              <Routes>
-                <Route path='' element={<Profile />} />
-                <Route path='orders' element={<ProfileOrders />} />
-                <Route path='orders/:number' element={
-                  <Modal
-                    title='Информация о заказе'
-                    onClose={() => navigate('/profile/orders')}
-                  >
-                    <OrderInfo />
-                  </Modal>
-                } />
-              </Routes>
-            </ProtectedRoute>
-          } />
+          <Route
+            path='/login'
+            element={
+              <GuestRoute>
+                <Login />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path='/register'
+            element={
+              <GuestRoute>
+                <Register />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path='/forgot-password'
+            element={
+              <GuestRoute>
+                <ForgotPassword />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path='/reset-password'
+            element={
+              <GuestRoute>
+                <ResetPassword />
+              </GuestRoute>
+            }
+          />
+          <Route
+            path='/profile/*'
+            element={
+              <ProtectedRoute>
+                <Routes>
+                  <Route path='' element={<Profile />} />
+                  <Route path='orders' element={<ProfileOrders />} />
+                  <Route
+                    path='orders/:number'
+                    element={
+                      <Modal
+                        title='Информация о заказе'
+                        onClose={() => navigate('/profile/orders')}
+                      >
+                        <OrderInfo />
+                      </Modal>
+                    }
+                  />
+                </Routes>
+              </ProtectedRoute>
+            }
+          />
           <Route path='/feed' element={<Feed />} />
           <Route
             path='/feed/:number'

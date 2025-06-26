@@ -8,11 +8,11 @@ export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const isAuthChecked = useSelector((state) => state.user.isAuthChecked);
   const location = useLocation();
 
-  if (!isAuthChecked) return <Preloader />; 
+  if (!isAuthChecked) return <Preloader />;
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    return <Navigate to='/login' state={{ from: location }} replace />;
   }
 
   return children;
-}; 
+};

@@ -34,7 +34,8 @@ export const OrderInfo: FC = () => {
             };
           }
         } else {
-          acc[item].count++; }
+          acc[item].count++;
+        }
         return acc;
       },
       {}

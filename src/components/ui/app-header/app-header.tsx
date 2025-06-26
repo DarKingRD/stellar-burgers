@@ -9,7 +9,10 @@ import {
   ProfileIcon
 } from '@zlden/react-developer-burger-ui-components';
 
-export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName, isAuthenticated }) => (
+export const AppHeaderUI: FC<TAppHeaderUIProps> = ({
+  userName,
+  isAuthenticated
+}) => (
   <header className={styles.header}>
     <nav className={`${styles.menu} p-4`}>
       <div className={styles.menu_part_left}>
