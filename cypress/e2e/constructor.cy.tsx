@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('Тесты страницы конструктора бургеров (E2E)', () => {
+describe('Burger Constructor Page E2E Tests', () => {
   const BUN_NAME = 'Краторная булка N-200i';
   const BUN_ID = '643d69a5c3f7b9001cfa093c';
   const MAIN_INGREDIENT_NAME = 'Биокотлета из марсианской Магнолии';
@@ -10,6 +10,18 @@ describe('Тесты страницы конструктора бургеров 
 
   const API_URL =
     Cypress.env('API_URL') || 'https://norma.nomoreparties.space/api';
+
+  const BUN_SELECTOR = `[data-cy="ingredient-${BUN_NAME}"]`;
+  const MAIN_INGREDIENT_SELECTOR = `[data-cy="ingredient-${MAIN_INGREDIENT_NAME}"]`;
+  const SAUCE_INGREDIENT_SELECTOR = `[data-cy="ingredient-${SAUCE_INGREDIENT_NAME}"]`;
+  const MAIN_INGREDIENT_LINK_SELECTOR = `[data-cy="ingredient-link-${MAIN_INGREDIENT_ID}"]`;
+  const SAUCE_INGREDIENT_LINK_SELECTOR = `[data-cy="ingredient-link-${SAUCE_INGREDIENT_ID}"]`;
+
+  const CONSTRUCTOR_SECTION = '[data-cy="burger-constructor"]';
+  const MODAL_ROOT = '#modals';
+  const ORDER_BUTTON = '[data-cy="order-button"]';
+  const MODAL_TITLE = '[data-cy="modal-title"]';
+  const MODAL_OVERLAY = '[data-cy="modal-overlay"]';
 
   beforeEach(() => {
     cy.fixture('ingredients.json').then((ingredientsData) => {
@@ -50,21 +62,15 @@ describe('Тесты страницы конструктора бургеров 
   });
 
   it('Корректная загрузка ингредиентов', () => {
-    cy.get(`[data-cy="ingredient-${BUN_NAME}"]`).should('be.visible');
-    cy.get(`[data-cy="ingredient-${MAIN_INGREDIENT_NAME}"]`).should(
-      'be.visible'
-    );
-    cy.get(`[data-cy="ingredient-${SAUCE_INGREDIENT_NAME}"]`).should(
-      'be.visible'
-    );
+    cy.get(BUN_SELECTOR).should('be.visible');
+    cy.get(MAIN_INGREDIENT_SELECTOR).should('be.visible');
+    cy.get(SAUCE_INGREDIENT_SELECTOR).should('be.visible');
   });
 
   describe('Добавление ингредиентов в конструктор', () => {
     it('Добавление булки и начинки в конструктор', () => {
-      cy.get(`[data-cy="ingredient-${BUN_NAME}"]`)
-        .contains('button', 'Добавить')
-        .click();
-      cy.get('[data-cy="burger-constructor"]').as('constructorSection');
+      cy.addIngredient(BUN_NAME);
+      cy.get(CONSTRUCTOR_SECTION).as('constructorSection');
 
       cy.get('@constructorSection')
         .find('[data-cy="constructor-bun-top"]')
@@ -75,76 +81,57 @@ describe('Тесты страницы конструктора бургеров 
         .contains(`${BUN_NAME} (низ)`)
         .should('be.visible');
 
-      cy.get(`[data-cy="ingredient-${MAIN_INGREDIENT_NAME}"]`)
-        .contains('button', 'Добавить')
-        .click();
+      cy.addIngredient(MAIN_INGREDIENT_NAME);
 
       cy.get('@constructorSection')
         .find('[data-cy="constructor-ingredients-list"]')
         .contains(MAIN_INGREDIENT_NAME)
         .should('be.visible');
 
-      cy.get(`[data-cy="ingredient-${BUN_NAME}"]`)
-        .find('div.counter')
-        .find('p')
-        .should('have.text', '2')
-        .and('be.visible');
-
-      cy.get(`[data-cy="ingredient-${MAIN_INGREDIENT_NAME}"]`)
-        .find('div.counter')
-        .find('p')
-        .should('have.text', '1')
-        .and('be.visible');
+      cy.checkIngredientCount(BUN_NAME, 2);
+      cy.checkIngredientCount(MAIN_INGREDIENT_NAME, 1);
     });
   });
 
   describe('Модальное окно с деталями ингредиента', () => {
     it('Должно открываться модальное окно при клике на ингредиент и закрываться', () => {
-      cy.get(`[data-cy="ingredient-link-${MAIN_INGREDIENT_ID}"]`).click();
+      cy.get(MAIN_INGREDIENT_LINK_SELECTOR).click();
 
-      cy.get('#modals').as('modalRoot');
+      cy.get(MODAL_ROOT).as('modalRoot');
       cy.get('@modalRoot')
-        .find('[data-cy="modal-title"]')
+        .find(MODAL_TITLE)
         .contains('Детали ингредиента')
         .should('be.visible');
       cy.get('@modalRoot').contains(MAIN_INGREDIENT_NAME).should('be.visible');
 
-      cy.get('@modalRoot').find('[data-cy="modal-close-button"]').click();
-      cy.get('@modalRoot').should('be.empty');
+      cy.closeModal();
     });
 
     it('Должно закрываться модальное окно при клике на оверлей', () => {
-      cy.get(`[data-cy="ingredient-link-${SAUCE_INGREDIENT_ID}"]`).click();
+      cy.get(SAUCE_INGREDIENT_LINK_SELECTOR).click();
 
-      cy.get('#modals').as('modalRoot');
+      cy.get(MODAL_ROOT).as('modalRoot');
       cy.get('@modalRoot')
-        .find('[data-cy="modal-title"]')
+        .find(MODAL_TITLE)
         .contains('Детали ингредиента')
         .should('be.visible');
 
-      cy.get('[data-cy="modal-overlay"]').click({ force: true });
-      cy.get('@modalRoot').should('be.empty');
+      cy.get(MODAL_OVERLAY).click({ force: true });
+      cy.get(MODAL_ROOT).should('be.empty');
     });
   });
 
   describe('Создание заказа', () => {
-    it('Создание заказа, показывание номера заказа в модальном окне и сбрасывание конструктора', () => {
-      cy.get(`[data-cy="ingredient-${BUN_NAME}"]`)
-        .contains('button', 'Добавить')
-        .click();
-      cy.get(`[data-cy="ingredient-${MAIN_INGREDIENT_NAME}"]`)
-        .contains('button', 'Добавить')
-        .click();
-      cy.get(`[data-cy="ingredient-${SAUCE_INGREDIENT_NAME}"]`)
-        .contains('button', 'Добавить')
-        .click();
+    it('Создание заказа, показ номера заказа в модальном окне и сброс конструктора', () => {
+      cy.addIngredient(BUN_NAME);
+      cy.addIngredient(MAIN_INGREDIENT_NAME);
+      cy.addIngredient(SAUCE_INGREDIENT_NAME);
 
-      cy.get('[data-cy="burger-constructor"]').as('constructorSection');
-      cy.get('[data-cy="order-button"]').click();
+      cy.get(ORDER_BUTTON).click();
 
       cy.wait('@createOrder').its('response.statusCode').should('eq', 200);
 
-      cy.get('#modals').as('modalRoot');
+      cy.get(MODAL_ROOT).as('modalRoot');
       cy.fixture('order.json').then((orderFixture) => {
         cy.get('@modalRoot')
           .find('[data-cy="order-number"]')
@@ -155,8 +142,7 @@ describe('Тесты страницы конструктора бургеров 
         .contains('идентификатор заказа')
         .should('be.visible');
 
-      cy.get('@modalRoot').find('[data-cy="modal-close-button"]').click();
-      cy.get('@modalRoot').should('be.empty');
+      cy.closeModal();
 
       cy.get('[data-cy="constructor-placeholder-bun-top"]').should(
         'be.visible'
@@ -168,15 +154,9 @@ describe('Тесты страницы конструктора бургеров 
         .contains('0')
         .should('be.visible');
 
-      cy.get(`[data-cy="ingredient-${BUN_NAME}"]`)
-        .find('div.counter')
-        .should('not.exist');
-      cy.get(`[data-cy="ingredient-${MAIN_INGREDIENT_NAME}"]`)
-        .find('div.counter')
-        .should('not.exist');
-      cy.get(`[data-cy="ingredient-${SAUCE_INGREDIENT_NAME}"]`)
-        .find('div.counter')
-        .should('not.exist');
+      cy.get(BUN_SELECTOR).find('div.counter').should('not.exist');
+      cy.get(MAIN_INGREDIENT_SELECTOR).find('div.counter').should('not.exist');
+      cy.get(SAUCE_INGREDIENT_SELECTOR).find('div.counter').should('not.exist');
     });
 
     it('Перенаправление на страницу входа при попытке заказа без авторизации', () => {
@@ -191,14 +171,10 @@ describe('Тесты страницы конструктора бургеров 
       cy.visit('/');
       cy.wait('@getIngredients');
 
-      cy.get(`[data-cy="ingredient-${BUN_NAME}"]`)
-        .contains('button', 'Добавить')
-        .click();
-      cy.get(`[data-cy="ingredient-${MAIN_INGREDIENT_NAME}"]`)
-        .contains('button', 'Добавить')
-        .click();
+      cy.addIngredient(BUN_NAME);
+      cy.addIngredient(MAIN_INGREDIENT_NAME);
 
-      cy.get('[data-cy="order-button"]').click();
+      cy.get(ORDER_BUTTON).click();
 
       cy.url().should('include', '/login');
       cy.contains('Вход').should('be.visible');

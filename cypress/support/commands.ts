@@ -1,37 +1,38 @@
 /// <reference types="cypress" />
-// ***********************************************
-// This example commands.ts shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      addIngredient(ingredientName: string): Chainable<void>;
+
+      checkIngredientCount(
+        ingredientName: string,
+        count: number
+      ): Chainable<void>;
+
+      closeModal(): Chainable<void>;
+    }
+  }
+}
+
+Cypress.Commands.add('addIngredient', (ingredientName) => {
+  cy.get(`[data-cy="ingredient-${ingredientName}"]`)
+    .contains('button', 'Добавить')
+    .click();
+});
+
+Cypress.Commands.add('checkIngredientCount', (ingredientName, count) => {
+  cy.get(`[data-cy="ingredient-${ingredientName}"]`)
+    .find('div.counter')
+    .find('p')
+    .should('have.text', count.toString())
+    .and('be.visible');
+});
+
+Cypress.Commands.add('closeModal', () => {
+  cy.get('#modals').as('modalRoot');
+  cy.get('@modalRoot').find('[data-cy="modal-close-button"]').click();
+  cy.get('@modalRoot').should('be.empty');
+});
+
+export {};
