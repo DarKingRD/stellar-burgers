@@ -25,22 +25,22 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - name: Install dependencies
+    - name: Установка зависимостей
       run: npm ci
     
-    - name: Create .env file from .env.example
+    - name: Создание .env файла из .env.example
       run: cp .env.example .env
 
-    - name: Run linter
+    - name: Запуск линтера
       run: npm run lint
 
-    - name: Run Jest tests
+    - name: Запуск Jest тестов
       run: npm run test:jest
 
-    - name: Build Storybook
+    - name: Создание Storybook
       run: npm run build-storybook
 
-    - name: Run Cypress E2E tests
+    - name: Запуск Cypress E2E тестов
       uses: cypress-io/github-action@v6
       with:
         start: npm start 
