@@ -2,6 +2,7 @@
   "name": "react-canonical",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://darkingrd.github.io/stellar-burgers",
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",
     "@testing-library/jest-dom": "^5.16.5",
