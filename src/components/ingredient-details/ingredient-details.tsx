@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { Preloader } from '../ui/preloader';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
@@ -9,24 +9,23 @@ export const IngredientDetails: FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
 
-  const { ingredients, loading } = useSelector((state) => state.ingredients);
+  const { ingredients, loading, error } = useSelector(
+    (state) => state.ingredients
+  );
 
-  const ingredientData = ingredients.find(
-    (ingredient) => ingredient._id === id
+  const ingredientData = useMemo(
+    () => ingredients.find((ingredient) => ingredient._id === id),
+    [ingredients, id]
   );
 
   useEffect(() => {
-    if (ingredients.length === 0) {
+    if (!loading && !error && ingredients.length === 0) {
       dispatch(fetchIngredients());
     }
-  }, [dispatch, ingredients.length]);
+  }, [dispatch, ingredients.length, loading, error, id]);
 
-  if (loading || (!ingredientData && ingredients.length === 0)) {
+  if (loading || !ingredientData) {
     return <Preloader />;
-  }
-
-  if (!ingredientData && ingredients.length > 0) {
-    return <div>Ингредиент не найден</div>;
   }
 
   return <IngredientDetailsUI ingredientData={ingredientData!} />;

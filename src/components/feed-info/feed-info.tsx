@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { TOrder } from '@utils-types';
 import { FeedInfoUI } from '../ui/feed-info';
 import { useSelector } from '../../services/store';
@@ -16,8 +16,8 @@ export const FeedInfo: FC = () => {
     totalToday: state.feed.totalToday
   }));
 
-  const readyOrders = getOrders(orders, 'done');
-  const pendingOrders = getOrders(orders, 'pending');
+  const readyOrders = useMemo(() => getOrders(orders, 'done'), [orders]);
+  const pendingOrders = useMemo(() => getOrders(orders, 'pending'), [orders]);
 
   return (
     <FeedInfoUI

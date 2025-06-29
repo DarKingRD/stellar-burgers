@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "name": "Бургер",
+  "order": {
+    "_id": "683dff7cc2f30c001cb297d8",
+    "ingredients": [
+      "643d69a5c3f7b9001cfa093c",
+      "643d69a5c3f7b9001cfa0942",
+      "643d69a5c3f7b9001cfa0941"
+    ],
+    "status": "done",
+    "name": "Бургер",
+    "owner": {
+        "name": "StellarTestUser",
+        "email": "test-user-stellar@example.com",
+        "createdAt": "2025-01-01T00:00:00.000Z",
+        "updatedAt": "2025-01-01T00:00:00.000Z"
+    },
+    "price": 2193,
+    "createdAt": "2025-06-02T19:46:04.702Z",
+    "updatedAt": "2025-06-02T19:46:05.438Z",
+    "number": 79998,
+    "__v": 0
+  }
+}

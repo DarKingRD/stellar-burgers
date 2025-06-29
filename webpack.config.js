@@ -54,7 +54,10 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html'
     }),
-    new Dotenv()
+    new Dotenv({
+      systemvars: true,
+      safe: true
+    })
   ],
   resolve: {
     extensions: [
@@ -83,7 +86,8 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: process.env.NODE_ENV === 'production' ? '/stellar-burgers/' : '/'
   },
   devServer: {
     static: path.join(__dirname, './dist'),

@@ -3,5 +3,20 @@
     "@babel/preset-env",
     "@babel/preset-react",
     "@babel/preset-typescript"
+  ],
+  "plugins": [
+    ["module-resolver", {
+      "root": ["./src"],
+      "alias": {
+        "@pages": "./src/pages",
+        "@components": "./src/components", 
+        "@ui": "./src/components/ui",
+        "@ui-pages": "./src/components/ui/pages",
+        "@utils-types": "./src/utils/types",
+        "@api": "./src/utils/burger-api.ts",
+        "@slices": "./src/services/slices",
+        "@selectors": "./src/services/selectors"
+      }
+    }]
   ]
 }
