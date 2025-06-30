@@ -83,6 +83,4 @@ src/
 
 Разработано [DarKingRD](https://github.com/DarKingRD) для Яндекс.Практикума :purple_heart:  
 
-[Перейти к проекту](https://github.com/DarKingRD/stellar-burgers)
-
 [Ссылка на сайт](https://darkingrd.github.io/stellar-burgers/)
